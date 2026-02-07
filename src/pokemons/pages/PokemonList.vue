@@ -2,6 +2,7 @@
 import pokemonApi from '@/pokemons/api/pokemonApi'
 import type { IPokemonListResponse } from '@/pokemons/interfaces/pokemon-list.response'
 import type { IPokemonDataResponse } from '@/pokemons/interfaces/pokemon-data.response'
+import { getPokemons } from '../helpers/get-pokemons'
 
 pokemonApi
   .get<IPokemonListResponse>('/pokemon?limit=10')
@@ -18,6 +19,14 @@ pokemonApi
     console.log(response.data.abilities)
   })
   .catch((error) => {
+    console.error('Error fetching Pokémon data:', error)
+  })
+
+getPokemons(10)
+  .then((pokemons: any) => {
+    console.log(` Pokémon List:`, pokemons)
+  })
+  .catch((error: any) => {
     console.error('Error fetching Pokémon data:', error)
   })
 </script>
