@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 //import pokemonApi from '@/pokemons/api/pokemonApi'
 //import type { IPokemonListResponse } from '@/pokemons/interfaces/pokemon-list.response'
 import type { IPokemonDataResponse } from '@/pokemons/interfaces/pokemon-data.response'
 import { getPokemons } from '../helpers/get-pokemons'
 
-const pokemons = ref<IPokemonDataResponse[]>([])
+const selectedPokemons = (await getPokemons(10)) as IPokemonDataResponse[] //This only works with Suspense active
+
+const pokemons = ref<IPokemonDataResponse[]>(selectedPokemons)
 
 // pokemonApi
 //   .get<IPokemonListResponse>('/pokemon?limit=10')
@@ -25,18 +27,34 @@ const pokemons = ref<IPokemonDataResponse[]>([])
 //     console.error('Error fetching Pokémon data:', error)
 //   })
 
-getPokemons(10)
-  .then((pokes: any) => {
-    console.log(` Pokémon List:`, pokemons)
-    pokemons.value = pokes
-  })
-  .catch((error: any) => {
-    console.error('Error fetching Pokémon data:', error)
-  })
+// getPokemons(10)
+//   .then((pokes: any) => {
+//     pokemons.value = pokes
+//   })
+//   .catch((error: any) => {
+//     console.error('Error fetching Pokémon data:', error)
+//   })
+
+watch(pokemons, (newValue) => {
+  console.log('Pokemons updated:', newValue)
+})
 </script>
 
 <template>
   <div>
     <h1>Pokemon List</h1>
+    <ul>
+      <li v-for="pokemon in pokemons" :key="pokemon.id">
+        <h2 class="list-title">{{ pokemon.name }}</h2>
+      </li>
+    </ul>
   </div>
 </template>
+
+<style>
+.list-title {
+  margin: 0;
+  padding: 0;
+  text-transform: capitalize;
+}
+</style>
