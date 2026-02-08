@@ -2,7 +2,7 @@
 //import { ref /* watch */ } from 'vue'
 //import pokemonApi from '@/pokemons/api/pokemonApi'
 //import type { IPokemonListResponse } from '@/pokemons/interfaces/pokemon-list.response'
-import type { IPokemonDataResponse } from '@/pokemons/interfaces/pokemon-data.response'
+//import type { IPokemonDataResponse } from '@/pokemons/interfaces/pokemon-data.response'
 //import { getPokemons as getPokemonsHelper /*, sleep */ } from '@/pokemons/helpers'
 import { usePokemons } from '../composables/usePokemons'
 //import { useQuery } from '@tanstack/vue-query'
@@ -139,3 +139,5 @@ button:disabled {
   font-weight: bold;
 }
 </style>
+
+<!-- generate here a pagination for the Pokemons, no more of 10 per page please -->
