@@ -3,7 +3,9 @@ import { ref, watch } from 'vue'
 //import pokemonApi from '@/pokemons/api/pokemonApi'
 //import type { IPokemonListResponse } from '@/pokemons/interfaces/pokemon-list.response'
 import type { IPokemonDataResponse } from '@/pokemons/interfaces/pokemon-data.response'
-import { getPokemons } from '../helpers/get-pokemons'
+import { getPokemons, sleep } from '@/pokemons/helpers'
+
+await sleep(500) //Simulate loading time
 
 const selectedPokemons = (await getPokemons(10)) as IPokemonDataResponse[] //This only works with Suspense active
 
@@ -51,7 +53,7 @@ watch(pokemons, (newValue) => {
   </div>
 </template>
 
-<style>
+<style scoped>
 .list-title {
   margin: 0;
   padding: 0;
