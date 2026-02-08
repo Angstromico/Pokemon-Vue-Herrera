@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { ref /* watch */ } from 'vue'
+//import { ref /* watch */ } from 'vue'
 //import pokemonApi from '@/pokemons/api/pokemonApi'
 //import type { IPokemonListResponse } from '@/pokemons/interfaces/pokemon-list.response'
-//import type { IPokemonDataResponse } from '@/pokemons/interfaces/pokemon-data.response'
-import { getPokemons as getPokemonsHelper /*, sleep */ } from '@/pokemons/helpers'
-//import { usePokemons } from '../composables/usePokemons'
-import { useQuery } from '@tanstack/vue-query'
-import { computed } from 'vue'
+import type { IPokemonDataResponse } from '@/pokemons/interfaces/pokemon-data.response'
+//import { getPokemons as getPokemonsHelper /*, sleep */ } from '@/pokemons/helpers'
+import { usePokemons } from '../composables/usePokemons'
+//import { useQuery } from '@tanstack/vue-query'
+//import { computed } from 'vue'
 
 //await sleep(500) //Simulate loading time
 
@@ -46,13 +46,13 @@ import { computed } from 'vue'
 
 //const { pokemons, isLoading, count, countReady } = usePokemons()
 
-import type { IPokemonDataResponse } from '@/pokemons/interfaces/pokemon-data.response'
+// import type { IPokemonDataResponse } from '@/pokemons/interfaces/pokemon-data.response'
 
-const limit = ref(10)
+// const limit = ref(10)
 
-const fetchPokemons = async (limitValue: number): Promise<IPokemonDataResponse[]> => {
-  return (await getPokemonsHelper(limitValue)) as IPokemonDataResponse[]
-}
+// const fetchPokemons = async (limitValue: number): Promise<IPokemonDataResponse[]> => {
+//   return (await getPokemonsHelper(limitValue)) as IPokemonDataResponse[]
+// }
 
 // const getPokemons: import('@tanstack/vue-query').QueryFunction<
 //   IPokemonDataResponse[]
@@ -61,29 +61,24 @@ const fetchPokemons = async (limitValue: number): Promise<IPokemonDataResponse[]
 //   return (await getPokemonsHelper(10)) as IPokemonDataResponse[] //How do I made the 10 Dynamic?
 // }
 
-const {
-  data: pokemons,
-  isLoading
-  // isSuccess
-} = useQuery<IPokemonDataResponse[]>({
-  queryKey: ['pokemons', { limit }],
-  queryFn: () => fetchPokemons(limit.value)
-})
+// const {
+//   data: pokemons,
+//   isLoading
+//   // isSuccess
+// } = useQuery<IPokemonDataResponse[]>({
+//   queryKey: ['pokemons', { limit }],
+//   queryFn: () => fetchPokemons(limit.value)
+// })
 
-const count = computed(() => (Array.isArray(pokemons.value) ? pokemons.value.length : 0))
+// const count = computed(() => (Array.isArray(pokemons.value) ? pokemons.value.length : 0))
+const { pokemons, isLoading, count, limit } = usePokemons()
 
 const increaseDecreaseLimit = (operation: 'increase' | 'decrease') => {
-  if (limit.value <= 5 && operation === 'decrease') {
-    alert('Limit cannot be less than or equal to five.')
-    //Give a better way of communicate this
-    return
-  }
-
   if (operation === 'increase') {
     limit.value += 5
   } else if (operation === 'decrease') {
     if (limit.value <= 5) {
-      console.warn('Mínimo alcanzado') // Mejor que un alert
+      alert('Limit cannot be less than or equal to five.')
       return
     }
     limit.value -= 5
