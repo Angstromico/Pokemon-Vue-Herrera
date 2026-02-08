@@ -7,6 +7,7 @@ import type { IPokemonDataResponse } from '@/pokemons/interfaces/pokemon-data.re
 import { usePokemons } from '../composables/usePokemons'
 //import { useQuery } from '@tanstack/vue-query'
 //import { computed } from 'vue'
+import CardList from '../components/CardList.vue'
 
 //await sleep(500) //Simulate loading time
 
@@ -71,7 +72,7 @@ import { usePokemons } from '../composables/usePokemons'
 // })
 
 // const count = computed(() => (Array.isArray(pokemons.value) ? pokemons.value.length : 0))
-const { pokemons, isLoading, count, limit } = usePokemons()
+const { pokemons, isLoading, count, limit, isError, error } = usePokemons()
 
 const increaseDecreaseLimit = (operation: 'increase' | 'decrease') => {
   if (operation === 'increase') {
@@ -100,11 +101,11 @@ const increaseDecreaseLimit = (operation: 'increase' | 'decrease') => {
     </div>
     <p v-if="!isLoading">Count: {{ count }}</p>
     <p v-if="isLoading">Loading...</p>
-    <ul v-else>
-      <li v-for="pokemon in pokemons as IPokemonDataResponse[]" :key="pokemon.id">
-        <h2 class="list-title">{{ pokemon.name }}</h2>
-      </li>
-    </ul>
+
+    <div v-if="isError" class="error">
+      <p>Error: {{ error }}</p>
+    </div>
+    <CardList v-else :pokemons="pokemons ?? []" />
   </div>
 </template>
 
@@ -132,5 +133,9 @@ button {
 button:disabled {
   cursor: not-allowed;
   opacity: 0.5;
+}
+.error {
+  color: red;
+  font-weight: bold;
 }
 </style>

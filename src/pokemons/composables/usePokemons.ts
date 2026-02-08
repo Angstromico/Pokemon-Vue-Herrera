@@ -10,7 +10,12 @@ export const usePokemons = () => {
     return (await getPokemonsHelper(limitValue)) as IPokemonDataResponse[]
   }
 
-  const { data: pokemons, isLoading } = useQuery<IPokemonDataResponse[]>({
+  const {
+    data: pokemons,
+    isLoading,
+    isError,
+    error
+  } = useQuery<IPokemonDataResponse[]>({
     queryKey: ['pokemons', { limit }],
     queryFn: () => fetchPokemons(limit.value)
   })
@@ -20,6 +25,8 @@ export const usePokemons = () => {
     pokemons,
     isLoading,
     count,
-    limit
+    limit,
+    isError,
+    error
   }
 }
