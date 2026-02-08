@@ -1,15 +1,16 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+//import { ref, watch } from 'vue'
 //import pokemonApi from '@/pokemons/api/pokemonApi'
 //import type { IPokemonListResponse } from '@/pokemons/interfaces/pokemon-list.response'
-import type { IPokemonDataResponse } from '@/pokemons/interfaces/pokemon-data.response'
-import { getPokemons, sleep } from '@/pokemons/helpers'
+//import type { IPokemonDataResponse } from '@/pokemons/interfaces/pokemon-data.response'
+//import { getPokemons /*, sleep */ } from '@/pokemons/helpers'
+import { usePokemons } from '../composables/usePokemons'
 
-await sleep(500) //Simulate loading time
+//await sleep(500) //Simulate loading time
 
-const selectedPokemons = (await getPokemons(10)) as IPokemonDataResponse[] //This only works with Suspense active
+//const selectedPokemons = (await getPokemons(10)) as IPokemonDataResponse[] //This only works with Suspense active
 
-const pokemons = ref<IPokemonDataResponse[]>(selectedPokemons)
+//const pokemons = ref<IPokemonDataResponse[]>([] /* selectedPokemons */)
 
 // pokemonApi
 //   .get<IPokemonListResponse>('/pokemon?limit=10')
@@ -37,15 +38,19 @@ const pokemons = ref<IPokemonDataResponse[]>(selectedPokemons)
 //     console.error('Error fetching Pokémon data:', error)
 //   })
 
-watch(pokemons, (newValue) => {
-  console.log('Pokemons updated:', newValue)
-})
+// watch(pokemons, (newValue) => {
+//   console.log('Pokemons updated:', newValue)
+// })
+
+const { pokemons, isLoading, count, countReady } = usePokemons()
 </script>
 
 <template>
   <div>
     <h1>Pokemon List</h1>
-    <ul>
+    <p v-if="countReady">Count: {{ count }}</p>
+    <p v-if="isLoading">Loading...</p>
+    <ul v-else>
       <li v-for="pokemon in pokemons" :key="pokemon.id">
         <h2 class="list-title">{{ pokemon.name }}</h2>
       </li>
@@ -58,5 +63,9 @@ watch(pokemons, (newValue) => {
   margin: 0;
   padding: 0;
   text-transform: capitalize;
+}
+p {
+  font-size: 1.2rem;
+  font-weight: bold;
 }
 </style>

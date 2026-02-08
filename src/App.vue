@@ -11,15 +11,15 @@ import { routerLinks } from '@/router/list-routes'
   </header>
   <RouterView v-slot="{ Component }">
     <template v-if="Component">
-      <Suspense :timeout="0">
-        <component :is="Component" />
+      <!-- <Suspense :timeout="0"> -->
+      <component :is="Component" />
 
-        <template #fallback>
+      <!-- <template #fallback>
           <div class="fallback">
             <p>Loading...</p>
           </div>
         </template>
-      </Suspense>
+      </Suspense> -->
     </template>
   </RouterView>
 </template>
