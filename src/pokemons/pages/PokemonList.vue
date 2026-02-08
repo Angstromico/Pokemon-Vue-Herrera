@@ -1,10 +1,12 @@
 <script setup lang="ts">
-//import { ref, watch } from 'vue'
+import { ref /* watch */ } from 'vue'
 //import pokemonApi from '@/pokemons/api/pokemonApi'
 //import type { IPokemonListResponse } from '@/pokemons/interfaces/pokemon-list.response'
 //import type { IPokemonDataResponse } from '@/pokemons/interfaces/pokemon-data.response'
-//import { getPokemons /*, sleep */ } from '@/pokemons/helpers'
-import { usePokemons } from '../composables/usePokemons'
+import { getPokemons as getPokemonsHelper /*, sleep */ } from '@/pokemons/helpers'
+//import { usePokemons } from '../composables/usePokemons'
+import { useQuery } from '@tanstack/vue-query'
+import { computed } from 'vue'
 
 //await sleep(500) //Simulate loading time
 
@@ -42,16 +44,69 @@ import { usePokemons } from '../composables/usePokemons'
 //   console.log('Pokemons updated:', newValue)
 // })
 
-const { pokemons, isLoading, count, countReady } = usePokemons()
+//const { pokemons, isLoading, count, countReady } = usePokemons()
+
+import type { IPokemonDataResponse } from '@/pokemons/interfaces/pokemon-data.response'
+
+const limit = ref(10)
+
+const fetchPokemons = async (limitValue: number): Promise<IPokemonDataResponse[]> => {
+  return (await getPokemonsHelper(limitValue)) as IPokemonDataResponse[]
+}
+
+// const getPokemons: import('@tanstack/vue-query').QueryFunction<
+//   IPokemonDataResponse[]
+// > = async () => {
+//   // You can set a default limit here if needed, e.g., 10
+//   return (await getPokemonsHelper(10)) as IPokemonDataResponse[] //How do I made the 10 Dynamic?
+// }
+
+const {
+  data: pokemons,
+  isLoading
+  // isSuccess
+} = useQuery<IPokemonDataResponse[]>({
+  queryKey: ['pokemons', { limit }],
+  queryFn: () => fetchPokemons(limit.value)
+})
+
+const count = computed(() => (Array.isArray(pokemons.value) ? pokemons.value.length : 0))
+
+const increaseDecreaseLimit = (operation: 'increase' | 'decrease') => {
+  if (limit.value <= 5 && operation === 'decrease') {
+    alert('Limit cannot be less than or equal to five.')
+    //Give a better way of communicate this
+    return
+  }
+
+  if (operation === 'increase') {
+    limit.value += 5
+  } else if (operation === 'decrease') {
+    if (limit.value <= 5) {
+      console.warn('Mínimo alcanzado') // Mejor que un alert
+      return
+    }
+    limit.value -= 5
+  }
+}
 </script>
 
 <template>
   <div>
     <h1>Pokemon List</h1>
-    <p v-if="countReady">Count: {{ count }}</p>
+    <div class="counter-btns">
+      <!-- Those buttons doesn't change the count, Why? -->
+      <button @click="increaseDecreaseLimit('increase')" :disabled="isLoading">
+        Increase count on five
+      </button>
+      <button @click="increaseDecreaseLimit('decrease')" :disabled="isLoading">
+        Decrease count on five
+      </button>
+    </div>
+    <p v-if="!isLoading">Count: {{ count }}</p>
     <p v-if="isLoading">Loading...</p>
     <ul v-else>
-      <li v-for="pokemon in pokemons" :key="pokemon.id">
+      <li v-for="pokemon in pokemons as IPokemonDataResponse[]" :key="pokemon.id">
         <h2 class="list-title">{{ pokemon.name }}</h2>
       </li>
     </ul>
@@ -67,5 +122,20 @@ const { pokemons, isLoading, count, countReady } = usePokemons()
 p {
   font-size: 1.2rem;
   font-weight: bold;
+}
+.counter-btns {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+button {
+  margin-bottom: 1rem;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  cursor: pointer;
+}
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
 }
 </style>
