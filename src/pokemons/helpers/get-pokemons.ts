@@ -12,8 +12,6 @@ export const getPokemons = async (limit: number = 45) => {
     const pokemons: IPokemonDataResponse[] = []
 
     for (const pokemon of data.results) {
-      console.log(pokemon)
-
       const pokemonData: IPokemonsData = await axios.get(pokemon.url)
       pokemons.push(pokemonData.data)
     }
